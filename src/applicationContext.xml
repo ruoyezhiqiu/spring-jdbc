@@ -25,5 +25,5 @@
 	</bean>
 	
 	<!-- 添加Spring自动扫描的包 -->
-	 <context:component-scan base-package="com.wushengde.spring.jdbc"></context:component-scan>
+	 <context:component-scan base-package="com.wushengde.spring"></context:component-scan>
 </beans>
