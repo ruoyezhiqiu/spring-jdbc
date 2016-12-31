@@ -1,5 +1,7 @@
 package com.wushengde.spring.tx;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -8,14 +10,24 @@ public class SpringTransactionTest {
 	private ClassPathXmlApplicationContext ctx=null;
 	private BookShopDao bookShopDao=null;
 	private BookShopService bookShopService=null;
+	private Cashier cashier=null;
 	
 	{
 		ctx=new ClassPathXmlApplicationContext("applicationContext.xml");
 		bookShopDao=ctx.getBean(BookShopDao.class);
 		bookShopService=(BookShopService) ctx.getBean("bookShopService");
+		cashier=(Cashier) ctx.getBean("cashier");
 	}
 	
-	//测试客户买书的方法：
+	
+	//测试事务的传播行为：测试顾客结帐，即顾客买了很多书
+	@Test
+	public void testTransactionalPropagation(){
+		cashier.checkout("AA", Arrays.asList(1001,1002));
+	}
+	
+	
+	//测试顾客买书的方法：
 	@Test
 	public void testBookShopService(){
 		bookShopService.purchase("AA", 1001);

@@ -7,10 +7,15 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 
-	<!-- 导入资源文件 -->
+	<!-- Spring中JDBC与事务的配置 -->
+	
+	
+	<!-- 1.JDBC的配置 -->
+	
+	<!-- a.导入资源文件 -->
 	<context:property-placeholder location="classpath:db.properties"/>
 
-	<!-- 配置c3p0数据源 -->
+	<!-- b.配置c3p0数据源 -->
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
 		<property name="user" value="${jdbc.user}"></property>
 		<property name="password" value="${jdbc.password}"></property>
@@ -21,20 +26,41 @@
 		<property name="maxPoolSize" value="${jdbc.maxPoolSize}"></property>
 	</bean>
 	
-	<!-- 配置spring的JdbcTemplate 即：配置spring的jdbc模板 -->
+	<!-- c.配置spring的JdbcTemplate 即：配置spring的jdbc模板 -->
 	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>
 	
-	<!-- 添加Spring自动扫描的包 -->
+	<!-- d.添加Spring自动扫描的包 -->
 	 <context:component-scan base-package="com.wushengde.spring"></context:component-scan>
+	
 	 
-	<!-- 配置事务的管理器 :配置事务管理要管理的数据源-->
+	<!--2.注解的方式配置事务 -->
+	 
+	<!-- 
+	 	注解方式的事务配置步骤：又叫：spring的声明式事务
+	 		1.配置事务管理器
+	 		2.启用事务注解
+	 		3.在相应的方法Service层方法上面使用：@Transactional 注解符号
+	 		
+	 		@Transactional注解中常用的属性：
+	 			1.propagation 属性：表示事务的传播行为，其常用的两个值：	1): REQUIRED :为事务默认的传播行为。如果有事务在运行，当前的方法就在这个事物内运行，否则就启动一个新的事务，在自己的事务内运行
+	 														2): REQUIRES_NEW：当前的方法必须启动新事务并在他自己的事务中运行，如果有事务正在运行，应该将以前的事务挂起，等待新事务执行完后，再恢复以前的事务
+	 			2.isolation属性:指定事务的隔离级别，最常用的取值为：READ_COMMITTED
+	 			
+	 			3.rollbackFor属性：表示指定事务在遇到什么异常时进行回滚，默认情况下spring的声明式事务对所有运行时异常进行回滚。也可以通过对应属性设置
+	 			
+	 			4.readOnly属性:表示这个事务只读取数据但不更新数据, 这样可以帮助数据库引擎优化事务，若这个事务是只读数据不更新数据，应该设置readOnly=true
+	 			
+	 			5.timeout属性：表示指定事务的强制回滚之前事务可以占用的时间，默认单位为：秒。
+	 -->
+	 
+	<!-- a.配置事务的管理器 :配置事务管理要管理的数据源-->
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>
 	
-	<!-- 启用事务注解 -->
+	<!-- b.启用事务注解：注解的驱动 -->
 	<tx:annotation-driven transaction-manager="transactionManager"/>
 	
 </beans>

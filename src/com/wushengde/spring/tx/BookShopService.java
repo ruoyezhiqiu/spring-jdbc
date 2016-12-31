@@ -3,7 +3,7 @@ package com.wushengde.spring.tx;
 public interface BookShopService {
 	/**
 	 * 
-	 * 书店中顾客买书的方法
+	 * 此方法表示：顾客买书的操作，此操作顾客可以执行很多次。
 	 */
 	public void purchase(String username,Integer isbn);
 }
